@@ -1,4 +1,4 @@
-import { use } from "react";
+import { useContext } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
 import { FaGoogle } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
@@ -6,7 +6,7 @@ import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
 
 const Login = () => {
-  const { signInUser, signInWithGoogle } = use(AuthContext);
+  const { signInUser, signInWithGoogle } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -17,6 +17,9 @@ const Login = () => {
     formState: { errors },
     reset,
   } = useForm();
+
+  // Redirect path after login
+  const from = location.state?.from || "/";
 
   // Handle login submit
   const onSubmit = (data) => {
@@ -29,9 +32,10 @@ const Login = () => {
           title: "Login Successful!",
           text: "Welcome back!",
           icon: "success",
-          confirmButtonColor: "#6366f1",
+          timer: 1500,
+          showConfirmButton: false,
         });
-        navigate(location?.state || "/");
+        navigate(from, { replace: true }); // Redirect to original page
       })
       .catch((error) => {
         Swal.fire({
@@ -52,9 +56,10 @@ const Login = () => {
           title: "Login Successful!",
           text: "Welcome back!",
           icon: "success",
-          confirmButtonColor: "#6366f1",
+          timer: 1500,
+          showConfirmButton: false,
         });
-        navigate(location?.state || "/");
+        navigate(from, { replace: true }); // Redirect to original page
       })
       .catch((error) => {
         Swal.fire({
@@ -109,13 +114,13 @@ const Login = () => {
 
         <button
           onClick={handleGoogleSignIn}
-          className="btn bg-white rounded-full text-black border-[#e5e5e5]"
+          className="btn bg-white rounded-full text-black border-[#e5e5e5] mt-3 flex items-center justify-center gap-2"
         >
           <FaGoogle />
           Login with Google
         </button>
 
-        <p className="text-center">
+        <p className="text-center mt-3">
           New to our website?{" "}
           <Link
             className="text-blue-500 hover:text-blue-800"

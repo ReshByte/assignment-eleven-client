@@ -1,10 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { AuthContext } from './AuthContext';
-import { createUserWithEmailAndPassword, GoogleAuthProvider, onAuthStateChanged, signInWithEmailAndPassword, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
+import { 
+    createUserWithEmailAndPassword, 
+    GoogleAuthProvider, 
+    onAuthStateChanged, 
+    signInWithEmailAndPassword, 
+    signInWithPopup, 
+    signOut, 
+    updateProfile 
+} from 'firebase/auth';
 import { auth } from '../firebase/firebase.config.js';
 import Swal from 'sweetalert2';
-
-
 
 const googleProvider = new GoogleAuthProvider();
 
@@ -14,43 +20,53 @@ const AuthProvider = ({ children }) => {
 
     const createUser = (email, password) => {
         setLoading(true);
-        return createUserWithEmailAndPassword(auth, email, password)
+        return createUserWithEmailAndPassword(auth, email, password);
     }
 
     const signInUser = (email, password) => {
         setLoading(true);
-        return signInWithEmailAndPassword(auth, email, password)
+        return signInWithEmailAndPassword(auth, email, password);
     }
 
-    const signInWithGoogle = () =>{
+    const signInWithGoogle = () => {
         setLoading(true);
         return signInWithPopup(auth, googleProvider);
     }
 
     const updateUserProfile = (displayName, photoURL) => {
-            return updateProfile(auth.currentUser, {displayName, photoURL})
+        return updateProfile(auth.currentUser, { displayName, photoURL });
     }
 
-    const signOutUser = () =>{
+    const signOutUser = () => {
         setLoading(true);
-           Swal.fire({
-      title: "Logout Successful!",
-      text: "You clicked the button!",
-      icon: "success"
-    });
-        return signOut(auth);
+        return signOut(auth)
+            .then(() => {
+                Swal.fire({
+                    icon: "success",
+                    title: "Logged Out!",
+                    text: "You have been successfully logged out.",
+                    timer: 1500,
+                    showConfirmButton: false,
+                });
+            })
+            .catch((err) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Logout Failed",
+                    text: err.message,
+                });
+            })
+            .finally(() => setLoading(false));
     }
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
             setLoading(false);
-        })
+        });
 
-        return () => {
-            unsubscribe()
-        }
-    }, [])
+        return () => unsubscribe();
+    }, []);
 
     const authInfo = {
         createUser,
@@ -61,11 +77,12 @@ const AuthProvider = ({ children }) => {
         user,
         loading,
         setLoading
-    }
+    };
+
     return (
-        <AuthContext value={authInfo}>
+        <AuthContext.Provider value={authInfo}>
             {children}
-        </AuthContext>
+        </AuthContext.Provider>
     );
 };
 
