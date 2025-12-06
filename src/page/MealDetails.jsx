@@ -216,7 +216,7 @@ const MealDetails = () => {
       </div>
 
       {/* Review Cards */}
-      <Review reviews={reviews} />
+      
     </div>
   );
 };

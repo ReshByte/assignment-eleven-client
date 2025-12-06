@@ -6,6 +6,7 @@ import Registration from "../auth/Registration";
 import Meal from "../page/Meal";
 import MealDetails from "../page/MealDetails";
 import PrivateRoute from "./PrivateRoute";
+import Dashboard from "../page/Dashboard";
 
 export const router = createBrowserRouter([
   {
@@ -21,6 +22,10 @@ export const router = createBrowserRouter([
             <MealDetails />
           </PrivateRoute>
         ),
+      },
+      {
+        path:"/dashboard",
+        element:<Dashboard></Dashboard>
       },
       { path: "/auth/login", element: <Login /> },
       { path: "/auth/register", element: <Registration /> },
