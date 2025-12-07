@@ -1,5 +1,6 @@
 import React from "react";
 import { FaUser, FaShoppingBag, FaStar, FaHeart } from "react-icons/fa";
+import { NavLink, Outlet } from "react-router"; // ✔ FIXED
 
 const Dashboard = () => {
   return (
@@ -15,7 +16,7 @@ const Dashboard = () => {
             aria-label="open sidebar"
             className="btn btn-square btn-ghost lg:hidden"
           >
-            {/* Sidebar icon */}
+
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
@@ -32,8 +33,10 @@ const Dashboard = () => {
           <div className="px-4 text-xl font-semibold">User Dashboard</div>
         </nav>
 
-        {/* Page content */}
-        <div className="p-6 text-xl font-medium">Select any option from the sidebar</div>
+        {/* Page Content (Outlet loads here) */}
+        <div className="p-6 text-xl font-medium">
+          <Outlet />   {/* ✔ CHILD ROUTES LOAD HERE */}
+        </div>
       </div>
 
       {/* SIDEBAR */}
@@ -46,13 +49,14 @@ const Dashboard = () => {
 
             {/* My Profile */}
             <li>
-              <button
+              <NavLink
+                to="profile"  // ✔ NO slash (nested route)
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center gap-3"
                 data-tip="My Profile"
               >
                 <FaUser className="text-lg" />
                 <span className="is-drawer-close:hidden">My Profile</span>
-              </button>
+              </NavLink>
             </li>
 
             {/* My Orders */}
@@ -68,27 +72,28 @@ const Dashboard = () => {
 
             {/* My Reviews */}
             <li>
-              <button
+              <NavLink to="myReview"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center gap-3"
                 data-tip="My Reviews"
               >
                 <FaStar className="text-lg" />
                 <span className="is-drawer-close:hidden">My Reviews</span>
-              </button>
+              </NavLink>
             </li>
 
             {/* Favorite Meal */}
             <li>
-              <button
+              <NavLink to="favorite"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center gap-3"
                 data-tip="Favorite Meal"
               >
                 <FaHeart className="text-lg" />
                 <span className="is-drawer-close:hidden">Favorite Meal</span>
-              </button>
+              </NavLink>
             </li>
 
           </ul>
+
         </div>
       </div>
     </div>

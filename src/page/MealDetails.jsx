@@ -159,7 +159,7 @@ const MealDetails = () => {
         <div className="flex-1 flex flex-col gap-3">
           <h2 className="text-2xl font-bold">{meal.chefName}</h2>
           <p className="text-gray-600">Chef ID: {meal.chefId}</p>
-          <p className="text-lg font-semibold text-pink-600">Price: ${meal.price}</p>
+          <p className="text-lg font-semibold text-pink-600">Price: {meal.price}</p>
           <p className="text-yellow-500 font-semibold">⭐ {meal.rating} / 5</p>
           <p className="text-gray-700"><strong>Ingredients:</strong> {ingredients || "Not specified"}</p>
           <p className="text-gray-700"><strong>Delivery Area:</strong> {meal.deliveryArea}</p>

@@ -7,6 +7,9 @@ import Meal from "../page/Meal";
 import MealDetails from "../page/MealDetails";
 import PrivateRoute from "./PrivateRoute";
 import Dashboard from "../page/Dashboard";
+import Profile from "../dashboard/user/Profile";
+import Review from "../home/Review";
+import Favorite from "../dashboard/user/Favorite";
 
 export const router = createBrowserRouter([
   {
@@ -14,21 +17,54 @@ export const router = createBrowserRouter([
     element: <MainLayout />,
     children: [
       { path: "/", element: <Home /> },
-      { path: "/meal", element: <Meal /> },
+      { path: "meal", element: <Meal /> },
+
       {
-        path: "/meal-details/:id",
+        path: "meal-details/:id",
         element: (
           <PrivateRoute>
             <MealDetails />
           </PrivateRoute>
         ),
       },
+
       {
-        path:"/dashboard",
-        element:<Dashboard></Dashboard>
+        path: "dashboard",
+        element: (
+          <PrivateRoute>
+            <Dashboard />
+          </PrivateRoute>
+        ),
+        children: [
+          {
+            path: "profile", // ✔ NO leading slash
+            element: (
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            ),
+          },
+            {
+            path: "myReview",
+            element: (
+              <PrivateRoute>
+                <Review></Review>
+              </PrivateRoute>
+            ),
+          },
+           {
+            path: "favorite",
+            element: (
+              <PrivateRoute>
+               <Favorite></Favorite>
+              </PrivateRoute>
+            ),
+          },
+        ],
       },
-      { path: "/auth/login", element: <Login /> },
-      { path: "/auth/register", element: <Registration /> },
+
+      { path: "auth/login", element: <Login /> },
+      { path: "auth/register", element: <Registration /> },
     ],
   },
 ]);
