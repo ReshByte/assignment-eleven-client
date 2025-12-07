@@ -10,6 +10,8 @@ import Dashboard from "../page/Dashboard";
 import Profile from "../dashboard/user/Profile";
 import Review from "../home/Review";
 import Favorite from "../dashboard/user/Favorite";
+import Order from "../dashboard/user/Order";
+import OrderPage from "../page/OrderPage";
 
 export const router = createBrowserRouter([
   {
@@ -37,7 +39,7 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
-            path: "profile", // ✔ NO leading slash
+            path: "profile", 
             element: (
               <PrivateRoute>
                 <Profile />
@@ -60,8 +62,26 @@ export const router = createBrowserRouter([
               </PrivateRoute>
             ),
           },
+           {
+            path: "order",
+            element: (
+              <PrivateRoute>
+               <Order>
+               </Order>
+              </PrivateRoute>
+            ),
+          },
         ],
       },
+     {
+  path: "order-page/:id",
+  element: (
+    <PrivateRoute>
+      <OrderPage />
+    </PrivateRoute>
+  ),
+},
+
 
       { path: "auth/login", element: <Login /> },
       { path: "auth/register", element: <Registration /> },

@@ -3,30 +3,29 @@ import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router";
 import { AuthContext } from "../context/AuthContext";
 import Swal from "sweetalert2";
-import Review from "../home/Review"; // Adjust the path if needed
+import { useForm } from "react-hook-form";
 
 const MealDetails = () => {
   const { id } = useParams();
   const [meal, setMeal] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [reviews, setReviews] = useState([]); // store reviews here
+  const [reviews, setReviews] = useState([]);
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // Review form states
-  const [comment, setComment] = useState("");
-  const [rating, setRating] = useState(5);
+  // React Hook Form for review
+  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: { rating: 5, comment: "" }
+  });
 
   // Fetch meal details and reviews
   useEffect(() => {
     const fetchMealAndReviews = async () => {
       try {
-        // Fetch meal details
         const mealRes = await fetch(`http://localhost:3000/meal-details/${id}`);
         const mealData = await mealRes.json();
         setMeal(mealData);
 
-        // Fetch reviews for this meal
         const reviewsRes = await fetch(`http://localhost:3000/reviews?foodId=${id}`);
         const reviewsData = await reviewsRes.json();
         setReviews(reviewsData);
@@ -47,10 +46,10 @@ const MealDetails = () => {
         title: "Login Required",
         text: "You must login to place an order.",
         confirmButtonColor: "#6366f1",
-      }).then(() => navigate("/auth/login", { state: `/meals/${id}` }));
+      }).then(() => navigate("/auth/login", { state: `/meal-details/${id}` }));
       return;
     }
-    navigate(`/order/${id}`);
+    navigate(`/order-page/${id}`);
   };
 
   // Add to favorite
@@ -61,7 +60,7 @@ const MealDetails = () => {
         title: "Login Required",
         text: "You must login to add to favorites.",
         confirmButtonColor: "#6366f1",
-      }).then(() => navigate("/auth/login", { state: `/meals/${id}` }));
+      }).then(() => navigate("/auth/login", { state: `/meal-details/${id}` }));
       return;
     }
 
@@ -90,8 +89,8 @@ const MealDetails = () => {
     }
   };
 
-  // Submit review
-  const handleSubmitReview = async () => {
+  // Submit review using React Hook Form
+  const onSubmitReview = async (formData) => {
     if (!user) {
       Swal.fire({
         icon: "warning",
@@ -102,17 +101,12 @@ const MealDetails = () => {
       return;
     }
 
-    if (!comment.trim()) {
-      Swal.fire({ icon: "error", title: "Comment Required", text: "Please write a review." });
-      return;
-    }
-
     const newReview = {
       foodId: id,
       reviewerName: user.displayName || user.email,
       reviewerImage: user.photoURL || "https://i.ibb.co/sample-user.jpg",
-      rating,
-      comment,
+      rating: Number(formData.rating),
+      comment: formData.comment,
       date: new Date().toISOString(),
     };
 
@@ -125,12 +119,8 @@ const MealDetails = () => {
       const data = await res.json();
       if (data.success) {
         Swal.fire({ icon: "success", title: "Review submitted successfully!" });
-        setComment("");
-        setRating(5);
-
-        // Append new review to state
-        setReviews((prev) => [data.review, ...prev]); 
-        // Make sure your backend returns the saved review as `data.review`
+        setReviews((prev) => [data.review, ...prev]); // append new review
+        reset(); // reset form
       }
     } catch (err) {
       console.error(err);
@@ -187,36 +177,56 @@ const MealDetails = () => {
       {/* Review Form */}
       <div className="bg-white p-6 rounded-xl shadow-lg border border-pink-100 mt-8">
         <h3 className="text-xl font-semibold mb-4 text-center">Give a Review</h3>
-        <label className="block mb-2 font-medium">Rating:</label>
-        <select
-          value={rating}
-          onChange={(e) => setRating(Number(e.target.value))}
-          className="border rounded px-3 py-2 mb-4 w-full"
-        >
-          {[1, 2, 3, 4, 5].map((n) => (
-            <option key={n} value={n}>{n}</option>
-          ))}
-        </select>
 
-        <label className="block mb-2 font-medium">Comment:</label>
-        <textarea
-          value={comment}
-          onChange={(e) => setComment(e.target.value)}
-          placeholder="Write your review..."
-          className="w-full border rounded px-3 py-2 mb-4"
-          rows={4}
-        />
+        <form onSubmit={handleSubmit(onSubmitReview)} className="space-y-4">
+          <div>
+            <label className="block mb-2 font-medium">Rating:</label>
+            <select
+              {...register("rating", { required: true })}
+              className="border rounded px-3 py-2 w-full"
+            >
+              {[1, 2, 3, 4, 5].map((n) => (
+                <option key={n} value={n}>{n}</option>
+              ))}
+            </select>
+          </div>
 
-        <button
-          onClick={handleSubmitReview}
-          className="w-full md:w-1/2 mx-auto block bg-gradient-to-r from-pink-500 to-red-600 text-white font-semibold py-2 rounded-full hover:opacity-90 transition-all"
-        >
-          Submit Review
-        </button>
+          <div>
+            <label className="block mb-2 font-medium">Comment:</label>
+            <textarea
+              {...register("comment", { required: "Comment is required" })}
+              placeholder="Write your review..."
+              className="w-full border rounded px-3 py-2"
+              rows={4}
+            />
+            {errors.comment && (
+              <p className="text-red-500 text-sm mt-1">{errors.comment.message}</p>
+            )}
+          </div>
+
+          <button
+            type="submit"
+            className="w-full md:w-1/2 mx-auto block bg-gradient-to-r from-pink-500 to-red-600 text-white font-semibold py-2 rounded-full hover:opacity-90 transition-all"
+          >
+            Submit Review
+          </button>
+        </form>
       </div>
 
-      {/* Review Cards */}
-      
+      {/* Reviews List */}
+      <div className="mt-8 space-y-4">
+        {reviews.length === 0 && <p className="text-center text-gray-500">No reviews yet.</p>}
+        {reviews.map((rev) => (
+          <div key={rev._id || rev.date} className="p-4 border rounded-lg bg-gray-50">
+            <div className="flex items-center gap-3 mb-2">
+              <img src={rev.reviewerImage} alt={rev.reviewerName} className="w-10 h-10 rounded-full" />
+              <p className="font-semibold">{rev.reviewerName}</p>
+              <p className="text-yellow-500">⭐ {rev.rating}</p>
+            </div>
+            <p>{rev.comment}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

@@ -61,13 +61,13 @@ const Dashboard = () => {
 
             {/* My Orders */}
             <li>
-              <button
+              <NavLink to="order"
                 className="is-drawer-close:tooltip is-drawer-close:tooltip-right flex items-center gap-3"
                 data-tip="My Orders"
               >
                 <FaShoppingBag className="text-lg" />
                 <span className="is-drawer-close:hidden">My Orders</span>
-              </button>
+              </NavLink>
             </li>
 
             {/* My Reviews */}
