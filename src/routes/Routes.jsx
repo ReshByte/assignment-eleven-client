@@ -16,6 +16,7 @@ import ManageUsers from "../dashboard/Admin/ManageUsers";
 import MyMeals from "../dashboard/Chef/MyMeals";
 import ManageRequests from "../dashboard/Admin/ManageRequests";
 import AdminStatistics from "../dashboard/Admin/AdminStatistics";
+import CreateMeal from "../dashboard/Chef/CreateMeal";
 
 export const router = createBrowserRouter([
   {
@@ -54,8 +55,12 @@ export const router = createBrowserRouter([
             path:"statistics",
             element: <AdminStatistics/>
           },
+           {
+            path:"create-meal",
+            element: <CreateMeal></CreateMeal>
+          },
           {
-            path:"MyMeals",
+            path:"my-meals",
             element: <MyMeals/>
           },
           {
