@@ -1,94 +1,137 @@
-// src/dashboard/user/Profile.jsx
-import React, { useContext, useState } from "react";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
+import axios from "axios";
+import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
   const { user } = useContext(AuthContext);
-  const [loading, setLoading] = useState(false);
+  const [dbUser, setDbUser] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  if (!user) {
-    return (
-      <div className="flex justify-center items-center h-screen text-xl font-semibold">
-        Loading Profile...
-      </div>
-    );
-  }
+  useEffect(() => {
+    if (user?.email) {
+      axios.get(`http://localhost:3000/user/${user.email}`)
+        .then(res => {
+          setDbUser(res.data);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoading(false);
+        });
+    }
+  }, [user]);
 
   const handleRequest = async (type) => {
-    setLoading(true);
     const requestData = {
-      _id: user.uid, // assuming Firebase uid
-      userName: user.displayName || "Unknown User",
-      userEmail: user.email,
+      userName: dbUser?.name || user?.displayName,
+      userEmail: user?.email,
       requestType: type,
       requestStatus: "pending",
       requestTime: new Date().toISOString(),
     };
 
     try {
-      const res = await fetch("http://localhost:3000/role-requests", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(requestData),
-      });
-      const data = await res.json();
-      if (data.success) {
-        Swal.fire("Success", `Request to become ${type} submitted!`, "success");
+      const res = await axios.post("http://localhost:3000/role-requests", requestData);
+      if (res.data.success) {
+        Swal.fire({
+          icon: "success",
+          title: "Request Sent",
+          text: `Your request to become a ${type} has been submitted.`,
+        });
       } else {
-        Swal.fire("Error", data.message || "Failed to submit request", "error");
+        Swal.fire({
+          icon: "info",
+          title: "Notice",
+          text: res.data.message,
+        });
       }
-    } catch (err) {
-      console.error(err);
-      Swal.fire("Error", "Something went wrong!", "error");
-    } finally {
-      setLoading(false);
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Failed to submit request.",
+      });
     }
   };
 
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-full min-h-[60vh]">
+        <span className="loading loading-spinner loading-lg text-primary"></span>
+      </div>
+    );
+  }
+
   return (
-    <div className="p-6 flex justify-center">
-      <div className="w-full max-w-md bg-white shadow-xl rounded-xl p-6 space-y-4">
-        {/* User Image */}
-        <div className="flex justify-center">
-          <img
-            src={user.photoURL || "https://i.ibb.co/sbgQDK7/user.png"}
-            alt="User"
-            className="w-28 h-28 rounded-full border"
-          />
-        </div>
+    <div className="flex justify-center items-center w-full p-4 lg:p-10 bg-base-100">
+      <div className="card w-full max-w-lg bg-base-100 shadow-2xl border border-base-200">
+        <div className="card-body items-center text-center">
+          <div className="avatar mb-4">
+            <div className="w-32 h-32 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+              <img 
+                src={dbUser?.image || user?.photoURL || "https://i.ibb.co/sbgQDK7/user.png"} 
+                alt="Profile" 
+              />
+            </div>
+          </div>
+          
+          <h2 className="card-title text-3xl font-bold mb-1">
+            {dbUser?.name || user?.displayName}
+          </h2>
+          <div className="badge badge-secondary badge-outline mb-6">
+            {dbUser?.role || "User"}
+          </div>
 
-        {/* User Info */}
-        <h2 className="text-2xl font-bold text-center">{user.displayName || "Unknown User"}</h2>
+          <div className="w-full text-left space-y-3 bg-base-200 p-6 rounded-xl">
+            <div className="flex justify-between border-b border-base-300 pb-2">
+              <span className="font-semibold text-gray-500">Email:</span>
+              <span className="text-gray-700 font-medium break-all">{user?.email}</span>
+            </div>
+            
+            <div className="flex justify-between border-b border-base-300 pb-2">
+              <span className="font-semibold text-gray-500">Address:</span>
+              <span className="text-gray-700 font-medium">
+                {dbUser?.address || "Not Provided"}
+              </span>
+            </div>
 
-        <div className="space-y-2 text-gray-700">
-          <p><strong>Email:</strong> {user.email}</p>
-          <p><strong>Address:</strong> Not Provided</p>
-          <p><strong>Role:</strong> {user.role || "user"}</p>
-          <p><strong>Status:</strong> {user.status || "active"}</p>
-          {user.role === "chef" && <p><strong>Chef ID:</strong> {user.chefId}</p>}
-        </div>
+            <div className="flex justify-between border-b border-base-300 pb-2">
+              <span className="font-semibold text-gray-500">Status:</span>
+              <span className={`font-bold ${dbUser?.status === 'fraud' ? 'text-red-500' : 'text-green-500'}`}>
+                {dbUser?.status || "Active"}
+              </span>
+            </div>
 
-        {/* Conditional Buttons */}
-        <div className="flex flex-col gap-3 mt-4">
-          {user.role !== "chef" && user.role !== "admin" && (
-            <button
-              disabled={loading}
-              onClick={() => handleRequest("chef")}
-              className="btn btn-warning w-full"
-            >
-              Be a Chef
-            </button>
-          )}
-          {user.role !== "admin" && (
-            <button
-              disabled={loading}
-              onClick={() => handleRequest("admin")}
-              className="btn btn-neutral w-full"
-            >
-              Be an Admin
-            </button>
-          )}
+            {dbUser?.role === "chef" && (
+              <div className="flex justify-between border-b border-base-300 pb-2">
+                <span className="font-semibold text-gray-500">Chef ID:</span>
+                <span className="text-primary font-bold">{dbUser?.chefId}</span>
+              </div>
+            )}
+          </div>
+
+          <div className="card-actions flex-col w-full gap-3 mt-6">
+            {dbUser?.role !== "admin" && (
+              <>
+                {dbUser?.role !== "chef" && (
+                  <button 
+                    onClick={() => handleRequest("chef")}
+                    className="btn btn-primary w-full text-white"
+                  >
+                    Be a Chef
+                  </button>
+                )}
+                
+                <button 
+                  onClick={() => handleRequest("admin")}
+                  className="btn btn-neutral w-full"
+                >
+                  Be an Admin
+                </button>
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>

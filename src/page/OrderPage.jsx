@@ -26,7 +26,7 @@ const OrderPage = () => {
         setMeal(data);
         setValue("quantity", 1);
       } catch (error) {
-        console.error("Failed to load meal:", error);
+        console.error(error);
       } finally {
         setLoading(false);
       }
@@ -37,7 +37,6 @@ const OrderPage = () => {
   const onSubmit = async (formData) => {
     if (!meal) return;
 
-    // Remove $ sign if exists and convert to number
     const price = parseFloat(meal.price.toString().replace(/\$/g, ""));
     const qty = parseInt(formData.quantity, 10);
     if (isNaN(price) || isNaN(qty)) {
@@ -73,19 +72,23 @@ const OrderPage = () => {
       };
 
       try {
+        const token = localStorage.getItem("access-token");
         const res = await fetch("http://localhost:3000/orders", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: { 
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          },
           body: JSON.stringify(orderData),
         });
         const data = await res.json();
 
-        if (data.success) {
+        if (data.success || data.insertedId) { 
           Swal.fire({
             icon: "success",
             title: "Order placed successfully!",
           });
-          navigate("/dashboard/order"); // navigate to Order page
+          navigate("/dashboard/my-orders");
         } else {
           Swal.fire({
             icon: "error",
@@ -94,7 +97,7 @@ const OrderPage = () => {
           });
         }
       } catch (err) {
-        console.error("Order error:", err);
+        console.error(err);
         Swal.fire({
           icon: "error",
           title: "Order failed",

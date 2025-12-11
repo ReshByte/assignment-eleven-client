@@ -12,6 +12,10 @@ import Review from "../home/Review";
 import Favorite from "../dashboard/user/Favorite";
 import Order from "../dashboard/user/Order";
 import OrderPage from "../page/OrderPage";
+import ManageUsers from "../dashboard/Admin/ManageUsers";
+import MyMeals from "../dashboard/Chef/MyMeals";
+import ManageRequests from "../dashboard/Admin/ManageRequests";
+import AdminStatistics from "../dashboard/Admin/AdminStatistics";
 
 export const router = createBrowserRouter([
   {
@@ -39,6 +43,22 @@ export const router = createBrowserRouter([
         ),
         children: [
           {
+            path:"manage-users",
+            element: <ManageUsers/>
+          },
+          {
+            path:"manage-requests",
+            element: <ManageRequests/>
+          },
+          {
+            path:"statistics",
+            element: <AdminStatistics/>
+          },
+          {
+            path:"MyMeals",
+            element: <MyMeals/>
+          },
+          {
             path: "profile", 
             element: (
               <PrivateRoute>
@@ -47,7 +67,7 @@ export const router = createBrowserRouter([
             ),
           },
             {
-            path: "myReview",
+            path: "my-Reviews",
             element: (
               <PrivateRoute>
                 <Review></Review>
@@ -55,7 +75,7 @@ export const router = createBrowserRouter([
             ),
           },
            {
-            path: "favorite",
+            path: "my-favorites",
             element: (
               <PrivateRoute>
                <Favorite></Favorite>
@@ -63,7 +83,7 @@ export const router = createBrowserRouter([
             ),
           },
            {
-            path: "order",
+            path: "my-orders",
             element: (
               <PrivateRoute>
                <Order>
