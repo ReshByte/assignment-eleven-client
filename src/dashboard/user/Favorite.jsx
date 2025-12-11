@@ -79,7 +79,7 @@ const Favorite = () => {
               <tr key={fav._id} className="border-b hover:bg-gray-50 transition-colors">
                 <td className="py-4 px-6">{fav.mealName}</td>
                 <td className="py-4 px-6">{fav.chefName}</td>
-                <td className="py-4 px-6">{fav.price ? `$${fav.price}` : "N/A"}</td>
+                <td className="py-4 px-6">{fav.price ? `${fav.price}` : "N/A"}</td>
                 <td className="py-4 px-6">{new Date(fav.addedTime).toLocaleDateString()}</td>
                 <td className="py-4 px-6 text-center">
                   <button

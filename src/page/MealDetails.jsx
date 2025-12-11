@@ -13,55 +13,63 @@ const MealDetails = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  // React Hook Form for review
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: { rating: 5, comment: "" }
+  const token = localStorage.getItem("access-token");
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
+    defaultValues: { rating: 5, comment: "" },
   });
 
-  // Fetch meal details and reviews
+  // Fetch meal details + reviews
   useEffect(() => {
-    const fetchMealAndReviews = async () => {
+    const fetchData = async () => {
       try {
         const mealRes = await fetch(`http://localhost:3000/meal-details/${id}`);
         const mealData = await mealRes.json();
         setMeal(mealData);
 
-        const reviewsRes = await fetch(`http://localhost:3000/reviews?foodId=${id}`);
+        const reviewsRes = await fetch(`http://localhost:3000/reviews/${id}`);
         const reviewsData = await reviewsRes.json();
         setReviews(reviewsData);
-      } catch (err) {
-        console.error("Failed to fetch meal or reviews:", err);
+      } catch (error) {
+        console.error(error);
       } finally {
         setLoading(false);
       }
     };
-    fetchMealAndReviews();
+
+    fetchData();
   }, [id]);
 
-  // Order button
+  // ORDER NOW BUTTON
   const handleOrder = () => {
     if (!user) {
-      Swal.fire({
+      return Swal.fire({
         icon: "warning",
         title: "Login Required",
-        text: "You must login to place an order.",
-        confirmButtonColor: "#6366f1",
-      }).then(() => navigate("/auth/login", { state: `/meal-details/${id}` }));
-      return;
+        text: "Please login to place an order.",
+      }).then(() =>
+        navigate("/auth/login", { state: `/meal-details/${id}` })
+      );
     }
+
     navigate(`/order-page/${id}`);
   };
 
-  // Add to favorite
+  // ADD TO FAVORITE
   const handleFavorite = async () => {
     if (!user) {
-      Swal.fire({
+      return Swal.fire({
         icon: "warning",
         title: "Login Required",
         text: "You must login to add to favorites.",
-        confirmButtonColor: "#6366f1",
-      }).then(() => navigate("/auth/login", { state: `/meal-details/${id}` }));
-      return;
+      }).then(() =>
+        navigate("/auth/login", { state: `/meal-details/${id}` })
+      );
     }
 
     const favData = {
@@ -71,34 +79,40 @@ const MealDetails = () => {
       chefId: meal.chefId,
       chefName: meal.chefName,
       price: meal.price,
+      addedTime: new Date(),
     };
 
     try {
       const res = await fetch("http://localhost:3000/favorites", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(favData),
       });
+
       const data = await res.json();
+
       Swal.fire({
-        icon: data.success ? "success" : "info",
-        title: data.success ? "Added to Favorites!" : data.message,
+        icon: data.insertedId ? "success" : "info",
+        title: data.insertedId
+          ? "Added to Favorites!"
+          : data.message || "Already in favorites",
       });
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  // Submit review using React Hook Form
+  // SUBMIT REVIEW
   const onSubmitReview = async (formData) => {
     if (!user) {
-      Swal.fire({
+      return Swal.fire({
         icon: "warning",
         title: "Login Required",
         text: "You must login to submit a review.",
-        confirmButtonColor: "#6366f1",
       });
-      return;
     }
 
     const newReview = {
@@ -107,32 +121,37 @@ const MealDetails = () => {
       reviewerImage: user.photoURL || "https://i.ibb.co/sample-user.jpg",
       rating: Number(formData.rating),
       comment: formData.comment,
-      date: new Date().toISOString(),
+      date: new Date(),
     };
 
     try {
       const res = await fetch("http://localhost:3000/reviews", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
         body: JSON.stringify(newReview),
       });
+
       const data = await res.json();
-      if (data.success) {
-        Swal.fire({ icon: "success", title: "Review submitted successfully!" });
-        setReviews((prev) => [data.review, ...prev]); // append new review
-        reset(); // reset form
+
+      if (data.insertedId) {
+        Swal.fire({ icon: "success", title: "Review submitted!" });
+        setReviews((prev) => [newReview, ...prev]);
+        reset();
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  if (loading) return <p className="text-center mt-10">Loading meal details...</p>;
+  if (loading) return <p className="text-center mt-10">Loading...</p>;
   if (!meal) return <p className="text-center mt-10 text-red-500">Meal not found!</p>;
 
   const ingredients = Array.isArray(meal.ingredients)
     ? meal.ingredients.join(", ")
-    : meal.ingredients?.split(",").map((i) => i.trim()).join(", ");
+    : meal.ingredients?.split(",").join(", ");
 
   return (
     <div className="px-6 py-10 max-w-5xl mx-auto">
@@ -143,30 +162,29 @@ const MealDetails = () => {
       <div className="flex flex-col md:flex-row gap-8 bg-white rounded-xl shadow-lg p-6 border border-pink-100">
         <img
           src={meal.foodImage}
-          alt={meal.foodName}
-          className="w-full md:w-1/2 h-80 object-cover rounded-lg shadow-sm"
+          alt=""
+          className="w-full md:w-1/2 h-80 object-cover rounded-lg shadow"
         />
-        <div className="flex-1 flex flex-col gap-3">
-          <h2 className="text-2xl font-bold">{meal.chefName}</h2>
+
+        <div className="flex-1 space-y-2">
+          <p className="text-2xl font-bold">{meal.chefName}</p>
           <p className="text-gray-600">Chef ID: {meal.chefId}</p>
           <p className="text-lg font-semibold text-pink-600">Price: {meal.price}</p>
-          <p className="text-yellow-500 font-semibold">⭐ {meal.rating} / 5</p>
-          <p className="text-gray-700"><strong>Ingredients:</strong> {ingredients || "Not specified"}</p>
-          <p className="text-gray-700"><strong>Delivery Area:</strong> {meal.deliveryArea}</p>
-          <p className="text-gray-700"><strong>Estimated Delivery Time:</strong> {meal.estimatedDeliveryTime || "30-60 mins"}</p>
-          <p className="text-gray-700"><strong>Chef’s Experience:</strong> {meal.chefExperience || "Not specified"}</p>
+          <p className="text-yellow-500 font-semibold">⭐ {meal.rating}</p>
+          <p><strong>Ingredients:</strong> {ingredients}</p>
+          <p><strong>Delivery Area:</strong> {meal.deliveryArea}</p>
 
           <div className="flex gap-4 mt-4">
             <button
               onClick={handleOrder}
-              className="py-2 px-4 bg-gradient-to-r from-pink-500 to-red-600 text-white rounded-full font-semibold hover:opacity-90 transition-all"
+              className="py-2 px-4 bg-pink-600 text-white rounded-full"
             >
               Order Now
             </button>
 
             <button
               onClick={handleFavorite}
-              className="py-2 px-4 bg-gradient-to-r from-yellow-400 to-yellow-600 text-white rounded-full font-semibold hover:opacity-90 transition-all"
+              className="py-2 px-4 bg-yellow-500 text-white rounded-full"
             >
               Add to Favorite
             </button>
@@ -175,55 +193,52 @@ const MealDetails = () => {
       </div>
 
       {/* Review Form */}
-      <div className="bg-white p-6 rounded-xl shadow-lg border border-pink-100 mt-8">
-        <h3 className="text-xl font-semibold mb-4 text-center">Give a Review</h3>
+      <div className="bg-white p-6 rounded-xl shadow-lg border mt-8">
+        <h3 className="text-xl font-semibold mb-4 text-center">Write a Review</h3>
 
         <form onSubmit={handleSubmit(onSubmitReview)} className="space-y-4">
-          <div>
-            <label className="block mb-2 font-medium">Rating:</label>
-            <select
-              {...register("rating", { required: true })}
-              className="border rounded px-3 py-2 w-full"
-            >
-              {[1, 2, 3, 4, 5].map((n) => (
-                <option key={n} value={n}>{n}</option>
-              ))}
-            </select>
-          </div>
+          <select {...register("rating")} className="border px-3 py-2 rounded w-full">
+            {[1, 2, 3, 4, 5].map((n) => (
+              <option key={n} value={n}>
+                {n}
+              </option>
+            ))}
+          </select>
 
-          <div>
-            <label className="block mb-2 font-medium">Comment:</label>
-            <textarea
-              {...register("comment", { required: "Comment is required" })}
-              placeholder="Write your review..."
-              className="w-full border rounded px-3 py-2"
-              rows={4}
-            />
-            {errors.comment && (
-              <p className="text-red-500 text-sm mt-1">{errors.comment.message}</p>
-            )}
-          </div>
+          <textarea
+            {...register("comment", { required: "Comment required" })}
+            className="border w-full p-3 rounded"
+            rows={4}
+            placeholder="Write your review..."
+          ></textarea>
+
+          {errors.comment && <p className="text-red-500">{errors.comment.message}</p>}
 
           <button
+            className="w-full bg-pink-600 text-white py-2 rounded-full"
             type="submit"
-            className="w-full md:w-1/2 mx-auto block bg-gradient-to-r from-pink-500 to-red-600 text-white font-semibold py-2 rounded-full hover:opacity-90 transition-all"
           >
             Submit Review
           </button>
         </form>
       </div>
 
-      {/* Reviews List */}
+      {/* Review List */}
       <div className="mt-8 space-y-4">
-        {reviews.length === 0 && <p className="text-center text-gray-500">No reviews yet.</p>}
-        {reviews.map((rev) => (
-          <div key={rev._id || rev.date} className="p-4 border rounded-lg bg-gray-50">
-            <div className="flex items-center gap-3 mb-2">
-              <img src={rev.reviewerImage} alt={rev.reviewerName} className="w-10 h-10 rounded-full" />
+        {reviews.length === 0 && <p>No reviews yet.</p>}
+
+        {reviews.map((rev, i) => (
+          <div key={i} className="p-4 bg-gray-50 border rounded-lg">
+            <div className="flex items-center gap-3">
+              <img
+                src={rev.reviewerImage}
+                alt=""
+                className="w-10 h-10 rounded-full"
+              />
               <p className="font-semibold">{rev.reviewerName}</p>
               <p className="text-yellow-500">⭐ {rev.rating}</p>
             </div>
-            <p>{rev.comment}</p>
+            <p className="mt-2">{rev.comment}</p>
           </div>
         ))}
       </div>

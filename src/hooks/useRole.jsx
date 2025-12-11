@@ -14,7 +14,11 @@ const useRole = () => {
       const getRole = async () => {
         try {
           const token = localStorage.getItem("access-token");
+<<<<<<< HEAD
           const { data } = await axios.get(`http://localhost:3000/user/${user.email}`, {
+=======
+          const { data } = await axios.get(`http://localhost:5000/user/${user.email}`, {
+>>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
             headers: {
               Authorization: `Bearer ${token}`
             }

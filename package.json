@@ -16,6 +16,10 @@
     "axios": "^1.13.2",
     "firebase": "^12.6.0",
     "framer-motion": "^12.23.26",
+<<<<<<< HEAD
+=======
+    "lucide-react": "^0.560.0",
+>>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-hook-form": "^7.68.0",
