@@ -33,11 +33,6 @@ const Dashboard = () => {
     );
   }
 
-  const getLinkClass = ({ isActive }) => 
-    isActive 
-      ? "flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg transition-all shadow-md font-medium" 
-      : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-base-300 rounded-lg transition-all font-medium";
-
   return (
     <div className="drawer lg:drawer-open bg-base-100 min-h-screen font-sans">
       <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
@@ -88,37 +83,22 @@ const Dashboard = () => {
               </NavLink>
             </li>
 
-<<<<<<< HEAD
             {role === "user" && (
               <>
                 <li>
                   <NavLink to="/dashboard/my-orders" className={getLinkClass}>
-=======
-            {user?.role !== "chef" && user?.role !== "admin" && (
-              <>
-                <li>
-                  <NavLink to="/dashboard/order" className={getLinkClass}>
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
                     <FaShoppingBag className="text-lg" />
                     <span>My Orders</span>
                   </NavLink>
                 </li>
                 <li>
-<<<<<<< HEAD
                   <NavLink to="/dashboard/my-reviews" className={getLinkClass}>
-=======
-                  <NavLink to="/dashboard/myReview" className={getLinkClass}>
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
                     <FaStar className="text-lg" />
                     <span>My Reviews</span>
                   </NavLink>
                 </li>
                 <li>
-<<<<<<< HEAD
                   <NavLink to="/dashboard/my-favorites" className={getLinkClass}>
-=======
-                  <NavLink to="/dashboard/favorite" className={getLinkClass}>
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
                     <FaHeart className="text-lg" />
                     <span>Favorite Meals</span>
                   </NavLink>
@@ -126,11 +106,7 @@ const Dashboard = () => {
               </>
             )}
 
-<<<<<<< HEAD
             {role === "chef" && (
-=======
-            {user?.role === "chef" && (
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
               <>
                 <li>
                   <NavLink to="/dashboard/create-meal" className={getLinkClass}>
@@ -153,11 +129,7 @@ const Dashboard = () => {
               </>
             )}
 
-<<<<<<< HEAD
             {role === "admin" && (
-=======
-            {user?.role === "admin" && (
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
               <>
                 <li>
                   <NavLink to="/dashboard/manage-users" className={getLinkClass}>

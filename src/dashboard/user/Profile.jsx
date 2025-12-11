@@ -4,7 +4,6 @@ import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
 
 const Profile = () => {
-<<<<<<< HEAD
   const { user } = useContext(AuthContext);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,31 +20,6 @@ const Profile = () => {
           setLoading(false);
         });
     }
-=======
-  const { user, setUser } = useContext(AuthContext); // setUser add korechi
-  const [dbUser, setDbUser] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  // Fetch user info from backend including role
-  const fetchDbUser = async () => {
-    if (!user?.email) return;
-    try {
-      const res = await axios.get(`http://localhost:3000/user/${user.email}`);
-      setDbUser(res.data);
-
-      // Update role in AuthContext
-      setUser(prev => ({ ...prev, role: res.data.role || "user" }));
-
-      setLoading(false);
-    } catch (err) {
-      console.error(err);
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchDbUser();
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
   }, [user]);
 
   const handleRequest = async (type) => {
@@ -59,22 +33,12 @@ const Profile = () => {
 
     try {
       const res = await axios.post("http://localhost:3000/role-requests", requestData);
-<<<<<<< HEAD
-=======
-
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
       if (res.data.success) {
         Swal.fire({
           icon: "success",
           title: "Request Sent",
           text: `Your request to become a ${type} has been submitted.`,
         });
-<<<<<<< HEAD
-=======
-
-        // Refetch user info from backend to update role if already approved
-        fetchDbUser();
->>>>>>> 1c8d3c5b5a04bf02dd716c01f1c26e7e39cb1795
       } else {
         Swal.fire({
           icon: "info",
