@@ -59,14 +59,30 @@ const AuthProvider = ({ children }) => {
             .finally(() => setLoading(false));
     }
 
-    useEffect(() => {
-        const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-            setUser(currentUser);
-            setLoading(false);
-        });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+        if (currentUser) {
+            try {
+                const res = await axios.get(`http://localhost:3000/user/${currentUser.email}`);
+                const backendUser = res.data;
+                setUser({ 
+                    ...currentUser, 
+                    role: backendUser?.role || "user" 
+                });
+            } catch (err) {
+                console.error(err);
+                setUser(currentUser);
+            }
+        } else {
+            setUser(null);
+        }
+        setLoading(false);
+    });
 
-        return () => unsubscribe();
-    }, []);
+    return () => unsubscribe();
+}, []);
+
+
 
     const authInfo = {
         createUser,

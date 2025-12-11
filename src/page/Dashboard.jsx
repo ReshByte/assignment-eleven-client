@@ -1,108 +1,159 @@
-// src/dashboard/Dashboard.jsx
 import React, { useContext } from "react";
-import { FaUser, FaShoppingBag, FaStar, FaHeart, FaUtensils, FaClipboardList, FaUsers, FaTasks } from "react-icons/fa";
+import { 
+  FaUser, 
+  FaShoppingBag, 
+  FaStar, 
+  FaHeart, 
+  FaUtensils, 
+  FaClipboardList, 
+  FaUsers, 
+  FaTasks, 
+  FaChartPie, 
+  FaHome,
+  FaBars
+} from "react-icons/fa";
 import { NavLink, Outlet } from "react-router";
 import { AuthContext } from "../context/AuthContext";
 
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
 
+  const getLinkClass = ({ isActive }) => 
+    isActive 
+      ? "flex items-center gap-3 px-4 py-3 bg-primary text-white rounded-lg transition-all shadow-md font-medium" 
+      : "flex items-center gap-3 px-4 py-3 text-gray-700 hover:bg-base-300 rounded-lg transition-all font-medium";
+
   return (
-    <div className="drawer lg:drawer-open">
+    <div className="drawer lg:drawer-open bg-base-100 min-h-screen font-sans">
       <input id="dashboard-drawer" type="checkbox" className="drawer-toggle" />
+      
+      <div className="drawer-content flex flex-col">
+        <div className="navbar bg-base-100 border-b border-base-200 lg:hidden sticky top-0 z-40">
+          <div className="flex-none">
+            <label htmlFor="dashboard-drawer" aria-label="open sidebar" className="btn btn-square btn-ghost text-primary">
+              <FaBars className="w-6 h-6" />
+            </label>
+          </div>
+          <div className="flex-1 px-2 mx-2 text-xl font-bold text-primary">
+            LocalChef Dashboard
+          </div>
+          <div className="flex-none">
+            <div className="avatar">
+              <div className="w-8 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                <img src={user?.photoURL || "https://i.ibb.co/sbgQDK7/user.png"} alt="User" />
+              </div>
+            </div>
+          </div>
+        </div>
 
-      {/* MAIN CONTENT */}
-      <div className="drawer-content">
-        <nav className="navbar w-full bg-base-300 px-4">
-          <label
-            htmlFor="dashboard-drawer"
-            aria-label="open sidebar"
-            className="btn btn-square btn-ghost lg:hidden"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-6 h-6">
-              <path d="M4 6h16M4 12h16M4 18h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
-          </label>
-          <div className="text-xl font-semibold">Dashboard</div>
-        </nav>
-
-        <div className="p-6">
+        <div className="p-4 md:p-8 lg:p-10 bg-base-100 min-h-[calc(100vh-64px)] lg:min-h-screen">
           <Outlet />
         </div>
       </div>
 
-      {/* SIDEBAR */}
-      <div className="drawer-side">
-        <label htmlFor="dashboard-drawer" className="drawer-overlay"></label>
+      <div className="drawer-side z-50">
+        <label htmlFor="dashboard-drawer" aria-label="close sidebar" className="drawer-overlay"></label>
+        <div className="flex flex-col min-h-full w-72 bg-base-200 text-base-content p-4 shadow-xl">
+          
+          <div className="flex items-center gap-3 px-4 mb-8 mt-2">
+             <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                <FaUtensils className="w-6 h-6" />
+             </div>
+             <div>
+                <h2 className="text-2xl font-black text-primary tracking-tight">LocalChef</h2>
+                <p className="text-xs font-semibold text-gray-500 uppercase tracking-widest">Bazaar</p>
+             </div>
+          </div>
 
-        <div className="flex min-h-full flex-col bg-base-200 w-64 p-2">
-          <ul className="menu w-full grow p-2">
-
-            {/* My Profile */}
+          <ul className="flex flex-col gap-2 flex-1">
             <li>
-              <NavLink to="profile" className="flex items-center gap-3">
-                <FaUser /> My Profile
+              <NavLink to="/dashboard/profile" className={getLinkClass}>
+                <FaUser className="text-lg" />
+                <span>My Profile</span>
               </NavLink>
             </li>
 
-            {/* USER MENU (default) */}
-            {user.role !== "chef" && user.role !== "admin" && (
+            {user?.role !== "chef" && user?.role !== "admin" && (
               <>
                 <li>
-                  <NavLink to="order" className="flex items-center gap-3">
-                    <FaShoppingBag /> My Orders
+                  <NavLink to="/dashboard/order" className={getLinkClass}>
+                    <FaShoppingBag className="text-lg" />
+                    <span>My Orders</span>
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="myReview" className="flex items-center gap-3">
-                    <FaStar /> My Reviews
+                  <NavLink to="/dashboard/myReview" className={getLinkClass}>
+                    <FaStar className="text-lg" />
+                    <span>My Reviews</span>
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="favorite" className="flex items-center gap-3">
-                    <FaHeart /> Favorite Meal
+                  <NavLink to="/dashboard/favorite" className={getLinkClass}>
+                    <FaHeart className="text-lg" />
+                    <span>Favorite Meals</span>
                   </NavLink>
                 </li>
               </>
             )}
 
-            {/* CHEF MENU */}
-            {user.role === "chef" && (
+            {user?.role === "chef" && (
               <>
                 <li>
-                  <NavLink to="create-meal" className="flex items-center gap-3">
-                    <FaUtensils /> Create Meal
+                  <NavLink to="/dashboard/create-meal" className={getLinkClass}>
+                    <FaUtensils className="text-lg" />
+                    <span>Create Meal</span>
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="my-meals" className="flex items-center gap-3">
-                    <FaClipboardList /> My Meals
+                  <NavLink to="/dashboard/my-meals" className={getLinkClass}>
+                    <FaClipboardList className="text-lg" />
+                    <span>My Meals</span>
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="order-requests" className="flex items-center gap-3">
-                    <FaTasks /> Order Requests
+                  <NavLink to="/dashboard/order-requests" className={getLinkClass}>
+                    <FaTasks className="text-lg" />
+                    <span>Order Requests</span>
                   </NavLink>
                 </li>
               </>
             )}
 
-            {/* ADMIN MENU */}
-            {user.role === "admin" && (
+            {user?.role === "admin" && (
               <>
                 <li>
-                  <NavLink to="manage-user" className="flex items-center gap-3">
-                    <FaUsers /> Manage Users
+                  <NavLink to="/dashboard/manage-users" className={getLinkClass}>
+                    <FaUsers className="text-lg" />
+                    <span>Manage Users</span>
                   </NavLink>
                 </li>
                 <li>
-                  <NavLink to="manage-requests" className="flex items-center gap-3">
-                    <FaTasks /> Manage Requests
+                  <NavLink to="/dashboard/manage-requests" className={getLinkClass}>
+                    <FaTasks className="text-lg" />
+                    <span>Manage Requests</span>
+                  </NavLink>
+                </li>
+                <li>
+                  <NavLink to="/dashboard/statistics" className={getLinkClass}>
+                    <FaChartPie className="text-lg" />
+                    <span>Platform Stats</span>
                   </NavLink>
                 </li>
               </>
             )}
           </ul>
+
+          <div className="divider my-4"></div>
+
+          <ul className="flex flex-col gap-2">
+            <li>
+              <NavLink to="/" className={getLinkClass}>
+                <FaHome className="text-lg" />
+                <span>Home</span>
+              </NavLink>
+            </li>
+          </ul>
+
         </div>
       </div>
     </div>
