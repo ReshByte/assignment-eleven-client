@@ -19,6 +19,7 @@ import AdminStatistics from "../dashboard/Admin/AdminStatistics";
 import CreateMeal from "../dashboard/Chef/CreateMeal";
 import OrderRequest from "../dashboard/Chef/OrderRequest";
 import PaymentSuccess from "../dashboard/user/PaymentSuccess";
+import NotFound from "../page/NotFound";
 
 export const router = createBrowserRouter([
   {
@@ -126,5 +127,9 @@ export const router = createBrowserRouter([
       { path: "auth/login", element: <Login /> },
       { path: "auth/register", element: <Registration /> },
     ],
+  },
+  {
+    path: "*",
+    element:<NotFound></NotFound>,
   },
 ]);
