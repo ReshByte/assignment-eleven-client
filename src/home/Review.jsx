@@ -39,12 +39,9 @@ const Review = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:3000/reviews/${id}`, { method: "DELETE" });
-        const data = await res.json();
-        if (data.success) {
-          Swal.fire("Deleted!", data.message, "success");
-          fetchReviews();
-        }
+        await fetch(`http://localhost:3000/reviews/${id}`, { method: "DELETE" });
+        setReviews((prev) => prev.filter((r) => r._id !== id));
+        Swal.fire("Deleted!", "Review deleted successfully", "success");
       } catch (err) {
         console.error(err);
         Swal.fire("Error", "Failed to delete review.", "error");
@@ -60,67 +57,70 @@ const Review = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      const res = await fetch(`http://localhost:3000/reviews/${editingReview._id}`, {
+      await fetch(`http://localhost:3000/reviews/${editingReview._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
-      const data = await res.json();
-      if (data.success) {
-        Swal.fire("Updated!", data.message, "success");
-        setEditingReview(null);
-        fetchReviews();
-      } else {
-        Swal.fire("Error", "Failed to update review.", "error");
-      }
+
+      setReviews((prev) =>
+        prev.map((r) =>
+          r._id === editingReview._id ? { ...r, ...formData } : r
+        )
+      );
+
+      setEditingReview(null);
+      Swal.fire("Updated!", "Review updated successfully", "success");
     } catch (err) {
       console.error(err);
       Swal.fire("Error", "Failed to update review.", "error");
     }
   };
 
-  if (loading) return <p className="mt-4 text-center text-gray-500">Loading reviews...</p>;
-  if (reviews.length === 0) return <p className="mt-4 text-center text-gray-500">No reviews yet.</p>;
+  if (loading)
+    return <p className="mt-6 text-center text-pink-400 text-lg">Loading reviews...</p>;
+  if (reviews.length === 0)
+    return <p className="mt-6 text-center text-pink-400 text-lg">No reviews yet.</p>;
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h1 className="text-3xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-600">
-        Review
+    <div className="mx-auto p-8 ">
+      <h1 className="text-4xl md:text-5xl font-extrabold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-pink-700">
+        Reviews
       </h1>
 
-      <div className="space-y-6">
+      <div className="space-y-8">
         {reviews.map((review) => (
           <div
             key={review._id}
-            className="flex flex-col md:flex-row items-start md:items-center justify-between p-5 border rounded-xl shadow-lg bg-white hover:shadow-2xl transition-shadow duration-300"
+            className="flex flex-col md:flex-row items-start md:items-center justify-between p-6 md:p-8 border-2 border-pink-300 rounded-2xl shadow-lg bg-pink-50 hover:shadow-2xl transition-shadow duration-300"
           >
-            <div className="flex items-center gap-4 mb-3 md:mb-0">
+            <div className="flex items-center gap-6 mb-4 md:mb-0">
               <img
-                src={review.reviewerImage || "https://via.placeholder.com/50"}
+                src={review.reviewerImage || "https://via.placeholder.com/60"}
                 alt={review.reviewerName || "Reviewer"}
-                className="w-14 h-14 rounded-full border-2 border-pink-500"
+                className="w-16 h-16 md:w-20 md:h-20 rounded-full border-4 border-pink-400 shadow-md"
               />
               <div>
-                <p className="font-semibold text-lg">{review.reviewerName || "Anonymous"}</p>
-                <p className="text-sm text-gray-500">
+                <p className="font-semibold text-lg md:text-xl text-pink-600">{review.reviewerName || "Anonymous"}</p>
+                <p className="text-sm md:text-base text-pink-400">
                   {review.date ? new Date(review.date).toLocaleDateString() : "Unknown date"}
                 </p>
               </div>
             </div>
-            <div className="flex-1 md:ml-6 mb-3 md:mb-0">
-              <p className="text-yellow-500 font-semibold text-lg">⭐ {review.rating || 0} / 5</p>
-              <p className="text-gray-700 mt-1">{review.comment || "No comment"}</p>
+            <div className="flex-1 md:ml-8 mb-4 md:mb-0">
+              <p className="text-yellow-500 font-semibold text-lg md:text-xl">⭐ {review.rating || 0} / 5</p>
+              <p className="text-pink-700 mt-2 md:mt-3 text-base md:text-lg">{review.comment || "No comment"}</p>
             </div>
-            <div className="flex gap-2 mt-3 md:mt-0">
+            <div className="flex gap-3 md:gap-4 mt-4 md:mt-0">
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded-lg shadow-md hover:bg-red-600 transition-colors"
                 onClick={() => handleDelete(review._id)}
+                className="px-5 py-2 md:px-6 md:py-3 bg-pink-500 text-white rounded-xl shadow-md hover:bg-pink-600 transition-colors"
               >
                 Delete
               </button>
               <button
-                className="px-4 py-2 bg-yellow-500 text-white rounded-lg shadow-md hover:bg-yellow-600 transition-colors"
                 onClick={() => handleEditClick(review)}
+                className="px-5 py-2 md:px-6 md:py-3 bg-pink-600 text-white rounded-xl shadow-md hover:bg-pink-700 transition-colors"
               >
                 Update
               </button>
@@ -129,45 +129,40 @@ const Review = () => {
         ))}
       </div>
 
-      {/* Edit Modal */}
       {editingReview && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-6 rounded-xl w-96 shadow-2xl">
-            <h2 className="text-2xl font-bold mb-4 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-red-600">
+          <div className="bg-pink-50 p-8 rounded-2xl w-96 md:w-[500px] shadow-2xl border-2 border-pink-300">
+            <h2 className="text-2xl md:text-3xl font-bold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-pink-500 to-pink-700">
               Edit Review
             </h2>
-            <form onSubmit={handleUpdate} className="space-y-4">
+            <form onSubmit={handleUpdate} className="space-y-5">
               <div>
-                <label className="block font-semibold mb-1">Rating (1-5)</label>
+                <label className="block font-semibold mb-2 text-lg text-pink-600">Rating (1-5)</label>
                 <input
                   type="number"
                   min="1"
                   max="5"
                   value={formData.rating}
                   onChange={(e) => setFormData({ ...formData, rating: e.target.value })}
-                  className="input input-bordered w-full"
+                  className="input input-bordered w-full text-lg border-pink-400"
                   required
                 />
               </div>
               <div>
-                <label className="block font-semibold mb-1">Comment</label>
+                <label className="block font-semibold mb-2 text-lg text-pink-600">Comment</label>
                 <textarea
                   value={formData.comment}
                   onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                  className="textarea textarea-bordered w-full"
-                  rows={4}
+                  className="textarea textarea-bordered w-full text-lg border-pink-400"
+                  rows={5}
                   required
                 />
               </div>
-              <div className="flex justify-end gap-2">
-                <button
-                  type="button"
-                  className="btn btn-neutral"
-                  onClick={() => setEditingReview(null)}
-                >
+              <div className="flex justify-end gap-4">
+                <button type="button" className="btn btn-neutral px-6 py-2" onClick={() => setEditingReview(null)}>
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
+                <button type="submit" className="btn btn-primary px-6 py-2 bg-pink-600 hover:bg-pink-700 text-white">
                   Update
                 </button>
               </div>

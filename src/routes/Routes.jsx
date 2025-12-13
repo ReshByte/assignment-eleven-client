@@ -17,6 +17,8 @@ import MyMeals from "../dashboard/Chef/MyMeals";
 import ManageRequests from "../dashboard/Admin/ManageRequests";
 import AdminStatistics from "../dashboard/Admin/AdminStatistics";
 import CreateMeal from "../dashboard/Chef/CreateMeal";
+import OrderRequest from "../dashboard/Chef/OrderRequest";
+import PaymentSuccess from "../dashboard/user/PaymentSuccess";
 
 export const router = createBrowserRouter([
   {
@@ -58,6 +60,9 @@ export const router = createBrowserRouter([
            {
             path:"create-meal",
             element: <CreateMeal></CreateMeal>
+          },{
+            path:"order-requests",
+            element:<OrderRequest></OrderRequest>
           },
           {
             path:"my-meals",
@@ -106,6 +111,16 @@ export const router = createBrowserRouter([
     </PrivateRoute>
   ),
 },
+ {
+        path: "payment-success",
+        element: (
+          <PrivateRoute>
+           <PaymentSuccess>
+           </PaymentSuccess>
+          </PrivateRoute>
+        ),
+      },
+
 
 
       { path: "auth/login", element: <Login /> },
