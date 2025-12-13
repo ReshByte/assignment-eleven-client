@@ -61,7 +61,8 @@ export const router = createBrowserRouter([
            {
             path:"create-meal",
             element: <CreateMeal></CreateMeal>
-          },{
+          },
+          {
             path:"order-requests",
             element:<OrderRequest></OrderRequest>
           },

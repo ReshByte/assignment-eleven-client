@@ -11,6 +11,7 @@ import {
 } from 'firebase/auth';
 import { auth } from '../firebase/firebase.config.js';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const googleProvider = new GoogleAuthProvider();
 
