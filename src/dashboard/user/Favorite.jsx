@@ -27,31 +27,35 @@ const Favorite = () => {
     fetchFavorites();
   }, [user]);
 
-  const handleDelete = async (id) => {
-    const confirm = await Swal.fire({
-      title: "Are you sure?",
-      text: "This meal will be removed from your favorites!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#ef4444", // red-500
-      cancelButtonColor: "#3b82f6", // blue-500
-      confirmButtonText: "Yes, remove it!",
-    });
+ const handleDelete = async (id) => {
+  const confirm = await Swal.fire({
+    title: "Are you sure?",
+    text: "This meal will be removed from your favorites!",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#ef4444",
+    cancelButtonColor: "#3b82f6",
+    confirmButtonText: "Yes, remove it!",
+  });
 
-    if (confirm.isConfirmed) {
-      try {
-        const res = await fetch(`http://localhost:3000/favorites/${id}`, { method: "DELETE" });
-        const data = await res.json();
-        if (data.success) {
-          Swal.fire("Removed!", "Meal removed from favorites successfully.", "success");
-          fetchFavorites();
-        }
-      } catch (err) {
-        console.error(err);
-        Swal.fire("Error", "Failed to remove meal from favorites.", "error");
+  if (confirm.isConfirmed) {
+    try {
+      const res = await fetch(`http://localhost:3000/favorites/${id}`, { method: "DELETE" });
+      const data = await res.json();
+
+      if (data.success) {
+        setFavorites(prev => prev.filter(fav => fav._id !== id)); // remove from state
+        Swal.fire("Removed!", data.message, "success");
+      } else {
+        Swal.fire("Error", data.message, "error");
       }
+    } catch (err) {
+      console.error(err);
+      Swal.fire("Error", "Failed to remove meal from favorites.", "error");
     }
-  };
+  }
+};
+
 
   if (loading) return <p className="mt-6 text-center text-gray-500">Loading favorite meals...</p>;
   if (favorites.length === 0)
