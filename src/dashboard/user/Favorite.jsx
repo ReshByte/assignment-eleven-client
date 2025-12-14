@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
+import useTitle from "../../hooks/useTitle";
 
 const Favorite = () => {
+  useTitle("Favorite");
   const { user } = useContext(AuthContext);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);

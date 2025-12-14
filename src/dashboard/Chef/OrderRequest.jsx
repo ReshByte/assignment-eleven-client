@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useTitle from "../../hooks/useTitle";
 
-const OrderRequest = ({ chefId=6 }) => {
+const OrderRequest = ({ chefId=1 }) => {
+  useTitle("Order Request")
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -45,7 +47,7 @@ const OrderRequest = ({ chefId=6 }) => {
   useEffect(() => {
     console.log("useEffect triggered with chefId:", chefId);
     loadOrders();
-  }, [chefId]); // chefId change হলে আবার লোড করবে
+  }, [chefId]); 
 
   // লোডিং UI
   if (loading) {

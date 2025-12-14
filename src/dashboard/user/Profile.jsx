@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import axios from "axios";
 import { AuthContext } from "../../context/AuthContext";
+import useTitle from "../../hooks/useTitle";
 
 const Profile = () => {
+  useTitle("Profile")
   const { user } = useContext(AuthContext);
   const [dbUser, setDbUser] = useState(null);
   const [loading, setLoading] = useState(true);

@@ -24,6 +24,11 @@ const Meal = () => {
     getMeals();
   }, [currentPage, sortOrder]);
 
+  // 🔹 Dynamic Browser Tab Title
+  useEffect(() => {
+    document.title = "All Meals | Chef App";
+  }, []);
+
   const handleSort = () => {
     setSortOrder(sortOrder === "asc" ? "desc" : "asc");
   };
@@ -55,11 +60,13 @@ const Meal = () => {
               className="w-full h-52 object-cover rounded-xl border border-pink-200 shadow-sm"
             />
 
-            <h2 className="text-2xl font-bold mt-4 text-pink-700">{meal.chefName}</h2>
+            <h2 className="text-2xl font-bold mt-4 text-pink-700">
+              {meal.chefName}
+            </h2>
             <p className="text-gray-500 mt-1">Chef ID: {meal.chefId}</p>
 
             <p className="text-lg font-semibold text-pink-600 mt-2">
-              Price: {meal.price}
+              Price: ${meal.price}
             </p>
 
             <p className="text-yellow-500 font-semibold mt-1">

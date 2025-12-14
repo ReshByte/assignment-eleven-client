@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import useTitle from "../../hooks/useTitle";
 
 const ManageUsers = () => {
+  useTitle("Manage User")
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
 
