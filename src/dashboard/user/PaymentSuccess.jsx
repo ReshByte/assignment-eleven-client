@@ -16,7 +16,11 @@ const PaymentSuccess = () => {
     }).then(() => navigate("/dashboard/my-orders"));
   }, []);
 
-  return <h1 className="text-center mt-20 text-3xl">Payment Successful ✅</h1>;
+  return (
+    <h1 className="text-center mt-20 text-3xl text-green-600 font-bold">
+      Payment Successful ✅
+    </h1>
+  );
 };
 
 export default PaymentSuccess;

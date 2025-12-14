@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
 
-const OrderRequest = ({ chefId=8 }) => {
+const OrderRequest = ({ chefId=6 }) => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
   const loadOrders = async () => {
-    // ডিবাগ: chefId কী আসছে দেখি
+    
     console.log("Chef ID received:", chefId);
     console.log("Type of chefId:", typeof chefId);
 
