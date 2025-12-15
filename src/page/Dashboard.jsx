@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { 
   FaUser, 
   FaShoppingBag, 
@@ -19,6 +19,11 @@ import useRole from "../hooks/useRole";
 const Dashboard = () => {
   const { user } = useContext(AuthContext);
   const [role, roleLoading] = useRole();
+
+  // 🔹 Dynamic Browser Tab Title
+  useEffect(() => {
+    document.title = "Dashboard | Chef App";
+  }, []);
 
   const getLinkClass = ({ isActive }) => 
     isActive

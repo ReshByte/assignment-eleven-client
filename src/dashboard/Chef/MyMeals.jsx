@@ -3,8 +3,10 @@ import axios from "axios";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
 import { useForm } from "react-hook-form";
+import useTitle from "../../hooks/useTitle";
 
 const MyMeals = () => {
+  useTitle("Chef Meal");
   const { user } = useContext(AuthContext);
   const [meals, setMeals] = useState([]);
   const [loading, setLoading] = useState(true);

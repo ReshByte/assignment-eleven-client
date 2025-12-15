@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { BarChart, Bar, Cell, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie } from 'recharts';
+import useTitle from '../../hooks/useTitle';
 
 const AdminStatistics = () => {
+  useTitle("Admin Statistics")
   const [stats, setStats] = useState({
     users: 0,
     requests: 0,

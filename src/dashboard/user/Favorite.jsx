@@ -1,8 +1,10 @@
 import React, { useEffect, useState, useContext } from "react";
 import Swal from "sweetalert2";
 import { AuthContext } from "../../context/AuthContext";
+import useTitle from "../../hooks/useTitle";
 
 const Favorite = () => {
+  useTitle("Favorite");
   const { user } = useContext(AuthContext);
   const [favorites, setFavorites] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -87,7 +89,7 @@ const Favorite = () => {
               >
                 <td className="py-4 px-6 font-medium text-gray-700">{fav.mealName}</td>
                 <td className="py-4 px-6 text-gray-600">{fav.chefName}</td>
-                <td className="py-4 px-6 font-semibold text-pink-600">{fav.price ? `$${fav.price}` : "N/A"}</td>
+                <td className="py-4 px-6 font-semibold text-pink-600">{fav.price ? `${fav.price}` : "N/A"}</td>
                 <td className="py-4 px-6 text-gray-500">{new Date(fav.addedTime).toLocaleDateString()}</td>
                 <td className="py-4 px-6 text-center">
                   <button
@@ -130,3 +132,4 @@ const Favorite = () => {
 };
 
 export default Favorite;
+// 
