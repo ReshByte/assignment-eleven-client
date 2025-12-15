@@ -66,7 +66,7 @@ const Meal = () => {
             <p className="text-gray-500 mt-1">Chef ID: {meal.chefId}</p>
 
             <p className="text-lg font-semibold text-pink-600 mt-2">
-              Price: {meal.price}
+              Price: ${meal.price}
             </p>
 
             <p className="text-yellow-500 font-semibold mt-1">
