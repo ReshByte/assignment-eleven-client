@@ -15,7 +15,7 @@ const useRole = () => {
         try {
           const token = localStorage.getItem("access-token");
           const { data } = await axios.get(
-            `http://localhost:3000/user/${user.email}`,
+            `https://assignment-eleven-server-lemon.vercel.app/user/${user.email}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`

@@ -19,7 +19,7 @@ const OrderPage = () => {
     useEffect(() => {
         const loadMeal = async () => {
             try {
-                const res = await axios.get(`http://localhost:3000/meal-details/${id}`);
+                const res = await axios.get(`https://assignment-eleven-server-lemon.vercel.app/meal-details/${id}`);
                 setMeal(res.data);
                 setValue("quantity", 1);
             } catch (error) {
@@ -65,7 +65,7 @@ const OrderPage = () => {
 
                 try {
                     const token = localStorage.getItem("access-token");
-                    const res = await axios.post("http://localhost:3000/orders", orderData, {
+                    const res = await axios.post("https://assignment-eleven-server-lemon.vercel.app/orders", orderData, {
                         headers: {
                             Authorization: `Bearer ${token}`
                         }

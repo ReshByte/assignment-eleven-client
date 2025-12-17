@@ -48,7 +48,7 @@ const CreateMeal = () => {
         createdAt: new Date(),
       };
 
-      const res = await axios.post("http://localhost:3000/meals", newMeal);
+      const res = await axios.post("https://assignment-eleven-server-lemon.vercel.app/meals", newMeal);
 
       if (res.data.insertedId) {
         Swal.fire("Success!", "Meal created successfully!", "success");

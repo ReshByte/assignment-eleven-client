@@ -45,7 +45,7 @@ const AdminStatistics = () => {
     const fetchStats = async () => {
       const token = localStorage.getItem("access-token");
       try {
-        const res = await axios.get("http://localhost:3000/admin-stats", {
+        const res = await axios.get("https://assignment-eleven-server-lemon.vercel.app/admin-stats", {
           headers: { Authorization: `Bearer ${token}` }
         });
         setStats(res.data);

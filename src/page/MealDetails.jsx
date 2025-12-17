@@ -28,11 +28,11 @@ const MealDetails = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const mealRes = await fetch(`http://localhost:3000/meal-details/${id}`);
+        const mealRes = await fetch(`https://assignment-eleven-server-lemon.vercel.app/meal-details/${id}`);
         const mealData = await mealRes.json();
         setMeal(mealData);
 
-        const reviewsRes = await fetch(`http://localhost:3000/reviews/${id}`);
+        const reviewsRes = await fetch(`https://assignment-eleven-server-lemon.vercel.app/reviews/${id}`);
         const reviewsData = await reviewsRes.json();
         setReviews(reviewsData);
       } catch (error) {
@@ -83,7 +83,7 @@ const MealDetails = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/favorites", {
+      const res = await fetch("https://assignment-eleven-server-lemon.vercel.app/favorites", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -125,7 +125,7 @@ const MealDetails = () => {
     };
 
     try {
-      const res = await fetch("http://localhost:3000/reviews", {
+      const res = await fetch("https://assignment-eleven-server-lemon.vercel.app/reviews", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

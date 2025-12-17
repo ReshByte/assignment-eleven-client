@@ -11,7 +11,7 @@ const ManageUsers = () => {
   const fetchUsers = async () => {
     const token = localStorage.getItem("access-token");
     try {
-      const res = await axios.get("http://localhost:3000/users", {
+      const res = await axios.get("https://assignment-eleven-server-lemon.vercel.app/users", {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUsers(res.data);
@@ -30,7 +30,7 @@ const ManageUsers = () => {
     const token = localStorage.getItem("access-token");
     try {
       const res = await axios.patch(
-        `http://localhost:3000/users/fraud/${id}`,
+        `https://assignment-eleven-server-lemon.vercel.app/users/fraud/${id}`,
         {},
         {
           headers: { Authorization: `Bearer ${token}` },

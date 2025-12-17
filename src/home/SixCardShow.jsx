@@ -5,7 +5,7 @@ const SixCardShow = () => {
   const [meals, setMeals] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/meals/six")
+    fetch("https://assignment-eleven-server-lemon.vercel.app/meals/six")
       .then((res) => res.json())
       .then((data) => setMeals(data));
   }, []);

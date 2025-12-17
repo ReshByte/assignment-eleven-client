@@ -18,7 +18,7 @@ const MyMeals = () => {
   const fetchMeals = async () => {
     if (!user?.email) return;
     try {
-      const res = await axios.get(`http://localhost:3000/meals/chef/${user.email}`);
+      const res = await axios.get(`https://assignment-eleven-server-lemon.vercel.app/meals/chef/${user.email}`);
       setMeals(res.data);
     } catch (error) {
       console.error("Error fetching meals:", error);
@@ -44,7 +44,7 @@ const MyMeals = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await axios.delete(`http://localhost:3000/meals/${id}`);
+        const res = await axios.delete(`https://assignment-eleven-server-lemon.vercel.app/meals/${id}`);
         if (res.data.deletedCount > 0) {
           Swal.fire("Deleted!", "Meal has been deleted.", "success");
           fetchMeals();
@@ -78,7 +78,7 @@ const MyMeals = () => {
         rating: editingMeal.rating || 0,
         foodImage: editingMeal.foodImage,
       };
-      const res = await axios.patch(`http://localhost:3000/meals/${editingMeal._id}`, updatedMeal);
+      const res = await axios.patch(`https://assignment-eleven-server-lemon.vercel.app/meals/${editingMeal._id}`, updatedMeal);
       if (res.data.modifiedCount > 0) {
         Swal.fire("Success", "Meal updated successfully!", "success");
         setEditingMeal(null);

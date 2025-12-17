@@ -10,7 +10,7 @@ const ManageRequests = () => {
 
   const fetchRequests = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/role-requests");
+      const res = await axios.get("https://assignment-eleven-server-lemon.vercel.app/role-requests");
       setRequests(res.data);
       setLoading(false);
     } catch (error) {
@@ -36,7 +36,7 @@ const ManageRequests = () => {
       if (result.isConfirmed) {
         try {
           const res = await axios.patch(
-            `http://localhost:3000/role-requests/${request._id}`,
+            `https://assignment-eleven-server-lemon.vercel.app/role-requests/${request._id}`,
             {
               status: newStatus,
               requestType: request.requestType,

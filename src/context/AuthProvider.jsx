@@ -64,7 +64,7 @@ const AuthProvider = ({ children }) => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
         if (currentUser) {
             try {
-                const res = await axios.get(`http://localhost:3000/user/${currentUser.email}`);
+                const res = await axios.get(`https://assignment-eleven-server-lemon.vercel.app/user/${currentUser.email}`);
                 const backendUser = res.data;
                 setUser({ 
                     ...currentUser, 

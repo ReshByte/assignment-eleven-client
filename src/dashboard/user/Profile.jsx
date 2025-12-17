@@ -12,7 +12,7 @@ const Profile = () => {
 
   useEffect(() => {
     if (user?.email) {
-      axios.get(`http://localhost:3000/user/${user.email}`)
+      axios.get(`https://assignment-eleven-server-lemon.vercel.app/user/${user.email}`)
         .then(res => {
           setDbUser(res.data);
           setLoading(false);
@@ -34,7 +34,7 @@ const Profile = () => {
     };
 
     try {
-      const res = await axios.post("http://localhost:3000/role-requests", requestData);
+      const res = await axios.post("https://assignment-eleven-server-lemon.vercel.app/role-requests", requestData);
       if (res.data.success) {
         Swal.fire({
           icon: "success",

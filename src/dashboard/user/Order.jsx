@@ -12,13 +12,13 @@ const Order = () => {
     if (!user?.email) return;
 
     axios
-      .get(`http://localhost:3000/orders/${user.email}`)
+      .get(`https://assignment-eleven-server-lemon.vercel.app/orders/${user.email}`)
       .then(res => setOrders(res.data));
   }, [user]);
 
   const handlePay = async (order) => {
     const res = await axios.post(
-      "http://localhost:3000/create-checkout-session",
+      "https://assignment-eleven-server-lemon.vercel.app/create-checkout-session",
       {
         orderId: order._id,
         price: order.price * order.quantity,

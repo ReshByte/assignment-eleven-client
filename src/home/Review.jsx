@@ -10,7 +10,7 @@ const Review = () => {
   const fetchReviews = async () => {
     setLoading(true);
     try {
-      const res = await fetch("http://localhost:3000/reviews");
+      const res = await fetch("https://assignment-eleven-server-lemon.vercel.app/reviews");
       const data = await res.json();
       setReviews(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -39,7 +39,7 @@ const Review = () => {
 
     if (confirm.isConfirmed) {
       try {
-        await fetch(`http://localhost:3000/reviews/${id}`, { method: "DELETE" });
+        await fetch(`https://assignment-eleven-server-lemon.vercel.app/reviews/${id}`, { method: "DELETE" });
         setReviews((prev) => prev.filter((r) => r._id !== id));
         Swal.fire("Deleted!", "Review deleted successfully", "success");
       } catch (err) {
@@ -57,7 +57,7 @@ const Review = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
-      await fetch(`http://localhost:3000/reviews/${editingReview._id}`, {
+      await fetch(`https://assignment-eleven-server-lemon.vercel.app/reviews/${editingReview._id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

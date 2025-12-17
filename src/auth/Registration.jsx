@@ -36,7 +36,7 @@ const Registration = () => {
         status: "active"
       };
 
-      await axios.post("http://localhost:3000/users", userInfo);
+      await axios.post("https://assignment-eleven-server-lemon.vercel.app/users", userInfo);
 
       toast.success("User created successfully!", { id: toastId });
       reset();

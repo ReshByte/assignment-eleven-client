@@ -11,7 +11,7 @@ const Meal = () => {
 
   const getMeals = () => {
     fetch(
-      `http://localhost:3000/meals?page=${currentPage}&limit=${limit}&sort=${sortOrder}`
+      `https://assignment-eleven-server-lemon.vercel.app/meals?page=${currentPage}&limit=${limit}&sort=${sortOrder}`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -66,7 +66,7 @@ const Meal = () => {
             <p className="text-gray-500 mt-1">Chef ID: {meal.chefId}</p>
 
             <p className="text-lg font-semibold text-pink-600 mt-2">
-              Price: ${meal.price}
+              Price: {meal.price}
             </p>
 
             <p className="text-yellow-500 font-semibold mt-1">

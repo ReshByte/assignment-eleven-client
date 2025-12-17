@@ -1,6 +1,6 @@
-import { useContext } from "react";
+import { useContext, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaEye, FaEyeSlash } from "react-icons/fa";
 import { AuthContext } from "../context/AuthContext";
 import Swal from "sweetalert2";
 import { useForm } from "react-hook-form";
@@ -9,6 +9,8 @@ const Login = () => {
   const { signInUser, signInWithGoogle } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   // React Hook Form
   const {
@@ -22,9 +24,7 @@ const Login = () => {
   const from = location.state?.from || "/";
 
   // Handle login submit
-  const onSubmit = (data) => {
-    const { email, password } = data;
-
+  const onSubmit = ({ email, password }) => {
     signInUser(email, password)
       .then(() => {
         reset();
@@ -35,20 +35,19 @@ const Login = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        navigate(from, { replace: true }); // Redirect to original page
+        navigate(from, { replace: true });
       })
-      .catch((error) => {
+      .catch(() => {
         Swal.fire({
           title: "Login Failed!",
           text: "Invalid email or password. Please try again.",
           icon: "error",
           confirmButtonColor: "#ef4444",
         });
-        console.log(error);
       });
   };
 
-  // Google sign-in
+  // Google Sign-in
   const handleGoogleSignIn = () => {
     signInWithGoogle()
       .then(() => {
@@ -59,72 +58,86 @@ const Login = () => {
           timer: 1500,
           showConfirmButton: false,
         });
-        navigate(from, { replace: true }); // Redirect to original page
+        navigate(from, { replace: true });
       })
-      .catch((error) => {
+      .catch(() => {
         Swal.fire({
           title: "Google Sign-In Failed!",
           text: "Please try again later.",
           icon: "error",
           confirmButtonColor: "#ef4444",
         });
-        console.log(error);
       });
   };
 
   return (
-    <div className="card bg-base-100 w-full mx-auto max-w-sm shrink-0 shadow-2xl border border-gray-200">
+    <div className="card bg-base-100 w-full mx-auto max-w-sm shadow-2xl border border-gray-200">
       <div className="card-body">
-        <h1 className="text-3xl font-bold text-center">Login</h1>
+        <h1 className="text-3xl font-bold text-center mb-2">Login</h1>
 
-        {/* React Hook Form */}
         <form onSubmit={handleSubmit(onSubmit)}>
-          <fieldset className="fieldset">
+          <fieldset className="fieldset space-y-2">
+            {/* Email */}
             <label className="label">Email</label>
             <input
               type="email"
-              className="input rounded-full focus:border-0 focus:outline-gray-200"
-              placeholder="Email"
+              className="input rounded-full focus:outline-gray-200"
+              placeholder="Enter your email"
               {...register("email", { required: "Email is required" })}
             />
             {errors.email && (
               <p className="text-red-500 text-sm">{errors.email.message}</p>
             )}
 
+            {/* Password */}
             <label className="label">Password</label>
-            <input
-              type="password"
-              className="input rounded-full focus:border-0 focus:outline-gray-200"
-              placeholder="Password"
-              {...register("password", { required: "Password is required" })}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="input rounded-full w-full pr-10 focus:outline-gray-200"
+                placeholder="Enter your password"
+                {...register("password", {
+                  required: "Password is required",
+                })}
+              />
+              <span
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-4 top-1/2 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+              >
+                {showPassword ? <FaEyeSlash /> : <FaEye />}
+              </span>
+            </div>
             {errors.password && (
               <p className="text-red-500 text-sm">{errors.password.message}</p>
             )}
 
-            <div>
-              <a className="link link-hover">Forgot password?</a>
+            {/* Forgot Password */}
+            <div className="text-right">
+              <a className="link link-hover text-sm">Forgot password?</a>
             </div>
 
-            <button className="btn text-white mt-4 rounded-full bg-gradient-to-r from-pink-500 to-red-600">
+            {/* Login Button */}
+            <button className="btn text-white mt-4 rounded-full bg-gradient-to-r from-pink-500 to-red-600 hover:scale-[1.02] transition-transform">
               Login
             </button>
           </fieldset>
         </form>
 
+        {/* Google Login */}
         <button
           onClick={handleGoogleSignIn}
-          className="btn bg-white rounded-full text-black border-[#e5e5e5] mt-3 flex items-center justify-center gap-2"
+          className="btn bg-white rounded-full text-black border border-gray-200 mt-3 flex items-center justify-center gap-2 hover:bg-gray-50"
         >
           <FaGoogle />
           Login with Google
         </button>
 
-        <p className="text-center mt-3">
+        {/* Register */}
+        <p className="text-center mt-4 text-sm">
           New to our website?{" "}
           <Link
-            className="text-blue-500 hover:text-blue-800"
             to="/auth/register"
+            className="text-blue-500 hover:text-blue-700 font-medium"
           >
             Register
           </Link>

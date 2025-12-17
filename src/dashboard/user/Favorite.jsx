@@ -13,7 +13,7 @@ const Favorite = () => {
     if (!user?.email) return;
     setLoading(true);
     try {
-      const res = await fetch(`http://localhost:3000/favorites/${user.email}`);
+      const res = await fetch(`https://assignment-eleven-server-lemon.vercel.app/favorites/${user.email}`);
       const data = await res.json();
       setFavorites(Array.isArray(data) ? data : []);
     } catch (err) {
@@ -42,7 +42,7 @@ const Favorite = () => {
 
     if (confirm.isConfirmed) {
       try {
-        const res = await fetch(`http://localhost:3000/favorites/${id}`, { method: "DELETE" });
+        const res = await fetch(`https://assignment-eleven-server-lemon.vercel.app/favorites/${id}`, { method: "DELETE" });
         const data = await res.json();
 
         if (data.success) {
@@ -117,7 +117,7 @@ const Favorite = () => {
               <span className="text-gray-500">{new Date(fav.addedTime).toLocaleDateString()}</span>
             </div>
             <p className="text-gray-600">Chef: {fav.chefName}</p>
-            <p className="font-semibold text-pink-600">Price: {fav.price ? `${fav.price}` : "N/A"}</p>
+            <p className="font-semibold text-pink-600">Price: ${fav.price ? `${fav.price}` : "N/A"}</p>
             <button
               onClick={() => handleDelete(fav._id)}
               className="mt-2 py-2 bg-gradient-to-r from-pink-500 to-pink-700 text-white rounded-lg shadow-md hover:from-pink-600 hover:to-pink-800 transition-all"

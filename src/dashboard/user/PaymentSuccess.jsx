@@ -8,7 +8,7 @@ const PaymentSuccess = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://localhost:3000/payments", {
+    fetch("https://assignment-eleven-server-lemon.vercel.app/payments", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

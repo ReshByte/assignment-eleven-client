@@ -13,7 +13,7 @@ const OrderRequest = () => {
             if (user?.email) {
                 try {
                     setLoading(true);
-                    const res = await axios.get(`http://localhost:3000/orders/chef-email/${user.email}`);
+                    const res = await axios.get(`https://assignment-eleven-server-lemon.vercel.app/orders/chef-email/${user.email}`);
                     setOrders(res.data);
                 } catch (error) {
                     console.error(error);
@@ -27,7 +27,7 @@ const OrderRequest = () => {
 
     const handleStatusChange = async (orderId, newStatus) => {
         try {
-            const res = await axios.patch(`http://localhost:3000/orders/${orderId}`, { status: newStatus });
+            const res = await axios.patch(`https://assignment-eleven-server-lemon.vercel.app/orders/${orderId}`, { status: newStatus });
             if (res.data.modifiedCount > 0) {
                 Swal.fire("Success", `Order ${newStatus}`, "success");
                 const updatedOrders = orders.map(order => 
